@@ -18,11 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from app_run.views import my_function_based_view, RunViewSet, UserViewSet
+from app_run.views import my_function_based_view, RunViewSet, UserViewSet, RunUserViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register('api/runs', RunViewSet)
+router.register('api/runs', RunUserViewSet)
 router.register('api/users', UserViewSet)
 
 urlpatterns = [

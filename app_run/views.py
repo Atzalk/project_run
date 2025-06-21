@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets
 from .models import Run
-from .serializers import RunSerializer, UserSerializer
+from .serializers import RunSerializer, UserSerializer, RunUserSerializer
 from django.contrib.auth.models import User
 
 
@@ -21,8 +21,8 @@ def my_function_based_view(request):
 
 
 class RunViewSet(viewsets.ModelViewSet):
-    queryset = Run.objects.all()
-    serializer_class = RunSerializer
+    queryset = Run.objects.select_related('athlete').all()
+    serializer_class = RunUserSerializer
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -37,3 +37,8 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         if type == 'athlete':
             qs = qs.filter(is_staff=False, is_superuser=False)
         return qs.filter(is_superuser=False)
+
+
+class RunUserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Run.objects.select_related('athlete').all()
+    serializer_class = RunUserSerializer
