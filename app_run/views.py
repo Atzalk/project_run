@@ -39,6 +39,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         return qs.filter(is_superuser=False)
 
 
-class RunUserViewSet(viewsets.ReadOnlyModelViewSet):
+class RunUserViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.select_related('athlete').all()
     serializer_class = RunUserSerializer
