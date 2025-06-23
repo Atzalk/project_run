@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from app_run.views import my_function_based_view, RunViewSet, UserViewSet, RunUserViewSet
+from app_run.views import my_function_based_view, RunViewSet, UserViewSet, RunUserViewSet, RunStartViewSet, \
+    RunStopViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -28,5 +29,7 @@ router.register('api/users', UserViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/company_details/', my_function_based_view),
+    path('api/runs/<int:id>/start', RunStartViewSet.as_view()),
+    path('api/runs/<int:id>/stop', RunStopViewSet.as_view()),
     path('', include(router.urls))
 ]

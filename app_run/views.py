@@ -1,12 +1,15 @@
-from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.filters import SearchFilter
+from rest_framework.views import APIView
+
 from .models import Run
 from .serializers import RunSerializer, UserSerializer, RunUserSerializer
 from django.contrib.auth.models import User
@@ -45,3 +48,26 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 class RunUserViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.select_related('athlete').all()
     serializer_class = RunUserSerializer
+
+
+class RunStartViewSet(APIView):
+    def get(self, request, id=None):
+        data_run = get_object_or_404(Run, id=id)
+        if data_run.status in ['in_progress', 'finished']:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        data_run.status = 'in_progress'
+        data_run.save()
+        serializer = RunSerializer(data_run)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RunStopViewSet(APIView):
+    def get(self, request, id=None):
+        data_run = get_object_or_404(Run, id=id)
+        if data_run.status != 'in_progress':
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        data_run.status = 'finished'
+        data_run.save()
+        serializer = RunSerializer(data_run)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
