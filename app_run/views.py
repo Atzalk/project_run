@@ -62,7 +62,7 @@ class RunStartViewSet(APIView):
 
     def post(self, request, id=None):
         data_run = get_object_or_404(Run, id=id)
-        if data_run.status in ['in_progress', 'finished']:
+        if data_run.status == 'in_progress' or data_run.status == 'finished':
             return Response(status=status.HTTP_400_BAD_REQUEST)
         data_run.status = 'in_progress'
         data_run.save()
