@@ -83,7 +83,7 @@ class RunStopViewSet(APIView):
 
     def post(self, request, id=None):
         data_run = get_object_or_404(Run, id=id)
-        if data_run.status != 'in_progress':
+        if data_run.status == 'init':
             return Response(status=status.HTTP_400_BAD_REQUEST)
         data_run.status = 'finished'
         data_run.save()
