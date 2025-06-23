@@ -51,14 +51,14 @@ class RunUserViewSet(viewsets.ModelViewSet):
 
 
 class RunStartViewSet(APIView):
-    def get(self, request, id=None):
-        data_run = get_object_or_404(Run, id=id)
-        if data_run.status in ['in_progress', 'finished']:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        data_run.status = 'in_progress'
-        data_run.save()
-        serializer = RunSerializer(data_run)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    # def get(self, request, id=None):
+    #     data_run = get_object_or_404(Run, id=id)
+    #     if data_run.status in ['in_progress', 'finished']:
+    #         return Response(status=status.HTTP_400_BAD_REQUEST)
+    #     data_run.status = 'in_progress'
+    #     data_run.save()
+    #     serializer = RunSerializer(data_run)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, id=None):
         data_run = get_object_or_404(Run, id=id)
@@ -71,15 +71,15 @@ class RunStartViewSet(APIView):
 
 
 class RunStopViewSet(APIView):
-    def get(self, request, id=None):
-        data_run = get_object_or_404(Run, id=id)
-        if data_run.status != 'in_progress':
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        data_run.status = 'finished'
-        data_run.save()
-        serializer = RunSerializer(data_run)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    # def get(self, request, id=None):
+    #     data_run = get_object_or_404(Run, id=id)
+    #     if data_run.status != 'in_progress':
+    #         return Response(status=status.HTTP_400_BAD_REQUEST)
+    #     data_run.status = 'finished'
+    #     data_run.save()
+    #     serializer = RunSerializer(data_run)
+    #
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, id=None):
         data_run = get_object_or_404(Run, id=id)
