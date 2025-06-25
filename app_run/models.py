@@ -10,5 +10,5 @@ class Run(models.Model):
     athlete = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
     status = models.CharField(max_length=20,
-                              choices=[('init', 'init'), ('in_progress', 'in_progress'), ('finished', 'finished')],
+                              choices=[('init', 'инициализация'), ('in_progress', 'старт'), ('finished', 'стоп')],
                               default='init')
