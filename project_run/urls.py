@@ -29,7 +29,7 @@ router.register('api/users', UserViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/company_details/', my_function_based_view),
-    path('api/runs/<int:id>/start', RunStartViewSet.as_view()),
-    path('api/runs/<int:id>/stop', RunStopViewSet.as_view()),
+    path('api/runs/<int:id>/start/', RunStartViewSet.as_view()),
+    path('api/runs/<int:id>/stop/', RunStopViewSet.as_view()),
     path('', include(router.urls))
 ]
