@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
@@ -67,7 +67,7 @@ class RunStartViewSet(APIView):
         data_run.status = 'in_progress'
         data_run.save()
         serializer = RunSerializer(data_run)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class RunStopViewSet(APIView):
@@ -89,4 +89,4 @@ class RunStopViewSet(APIView):
         data_run.save()
         serializer = RunSerializer(data_run)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
