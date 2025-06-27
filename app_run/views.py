@@ -7,12 +7,18 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets, status
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 
 from .models import Run
 from .serializers import RunSerializer, UserSerializer, RunUserSerializer
 from django.contrib.auth.models import User
+from django_filters.rest_framework import DjangoFilterBackend
+
+
+class RunsPagination(PageNumberPagination):
+    page_size_query_param = 'size'
 
 
 @api_view(['GET'])
@@ -27,13 +33,16 @@ def my_function_based_view(request):
 class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.select_related('athlete').all()
     serializer_class = RunSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['status', 'athlete']
+    ordering_fields = ['created_at']
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    filter_backends = [SearchFilter]
-    search_fields = ['first_name', 'last_name']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['first_name', 'last_name']
 
     def get_queryset(self):
         qs = self.queryset
@@ -48,18 +57,13 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 class RunUserViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.select_related('athlete').all()
     serializer_class = RunUserSerializer
+    pagination_class = RunsPagination
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['status', 'athlete']
+    ordering_fields = ['created_at']
 
 
 class RunStartViewSet(APIView):
-    # def get(self, request, id=None):
-    #     data_run = get_object_or_404(Run, id=id)
-    #     if data_run.status in ['in_progress', 'finished']:
-    #         return Response(status=status.HTTP_400_BAD_REQUEST)
-    #     data_run.status = 'in_progress'
-    #     data_run.save()
-    #     serializer = RunSerializer(data_run)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-
     def post(self, request, id=None):
         data_run = get_object_or_404(Run, id=id)
         if data_run.status == 'in_progress' or data_run.status == 'finished':
@@ -71,16 +75,6 @@ class RunStartViewSet(APIView):
 
 
 class RunStopViewSet(APIView):
-    # def get(self, request, id=None):
-    #     data_run = get_object_or_404(Run, id=id)
-    #     if data_run.status != 'in_progress':
-    #         return Response(status=status.HTTP_400_BAD_REQUEST)
-    #     data_run.status = 'finished'
-    #     data_run.save()
-    #     serializer = RunSerializer(data_run)
-    #
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-
     def post(self, request, id=None):
         data_run = get_object_or_404(Run, id=id)
         if data_run.status == 'init' or data_run.status == 'finished':
