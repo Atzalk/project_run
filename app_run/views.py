@@ -21,6 +21,10 @@ class RunsPagination(PageNumberPagination):
     page_size_query_param = 'size'
 
 
+class UsersPagination(PageNumberPagination):
+    page_size_query_param = 'size'
+
+
 @api_view(['GET'])
 def my_function_based_view(request):
     return Response({
@@ -41,8 +45,10 @@ class RunViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    pagination_class = UsersPagination
     filterset_fields = ['first_name', 'last_name']
+    ordering_fields = ['date_joined']
 
     def get_queryset(self):
         qs = self.queryset
